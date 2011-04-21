@@ -7,7 +7,7 @@ app.core.Object.define("app.model.state.crouch", {
     member: {
 		state: "crouch",
 		
-		lockTime: 2000,
+		lockTime: 500,
 		
 		possibleTransitions: [
 			'walkRight',

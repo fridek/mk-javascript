@@ -26,7 +26,7 @@ app.core.Object.define("app.model.state", {
 			if (fsm.processQueue()) {
 				//console.log('no states in queue');
 				fsm.forceState(this.nextState);
-			}
+			};
 		},
 		
 		playSound: function() {

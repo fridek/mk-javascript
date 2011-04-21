@@ -19,11 +19,11 @@ app.core.Object.define("app.view.Object", {
             doc.head.appendChild(link);
         },
         removeClass: function (el, name) {
-           console.log("removeClass " + name + " from " + el);
+           //console.log("removeClass " + name + " from " + el);
            $('#' + el).removeClass(name);
         },
         addClass: function (el, name) {
-           console.log("addClass " + name + " to " + el);
+           //console.log("addClass " + name + " to " + el);
            $('#' + el).addClass(name);
         }
     }

@@ -27,6 +27,7 @@ app.core.Object.define("app.controller.Fsm", {
 		
 		processQueue: function() {
 			//console.log("Queue processing");
+			//console.log(this.queue);
 			if(this.queue != null) {
 				this.character.runEvent(this.queue);
 				this.queue = null;
@@ -88,7 +89,9 @@ app.core.Object.define("app.controller.Fsm", {
 			
 			//console.log('FSM: ok, change. Previous state: ' + this.currentState + ', new state: ' + newState);
 			this._states[newState].activate(this);
+			//this._states[this.currentState].deactivate(this);
 			this.currentState = newState;
+			$('#log').html('Current state: ' + this.currentState);
 			
 			this.character._model.state = newState;
 			
@@ -109,7 +112,7 @@ app.core.Object.define("app.controller.Fsm", {
 		forceState: function(newState) {
 			//console.log("forced state: " + newState);
 			this.lock = false;
-			this.character.runEvent(newState);			
+			this.character.runEvent(newState);		
 		}
 	}
 });

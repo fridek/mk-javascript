@@ -1,0 +1,25 @@
+
+.crouch {
+    -webkit-animation-name: 'subzero-crouch-linear-key';
+    -webkit-animation-timing-function: linear;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 1 !important;
+	
+    width: 100px;
+    height: 143px;
+
+  background-position: -190px 0;  
+    
+ 	background-image: url('../asset/crouch.gif');	
+}
+
+@-webkit-keyframes 'subzero-crouch-linear-key' {
+    0% { background-position: -190px 0; }
+    0.01% { background-position: 0 0; }
+    33.32% { background-position: 0 0; }
+    33.33% { background-position: -95px 0; }
+    66.65% { background-position: -95px 0; }
+    66.66% { background-position: -190px 0; }
+    99.99% { background-position: -190px 0; }
+    100% { background-position: -190px 0; }
+}

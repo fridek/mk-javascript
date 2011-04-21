@@ -3,12 +3,16 @@ app.core.Object.define("app.controller.Game", {
     constructor: function (model, view) {
         arguments.callee.prototype.uper.apply(this, arguments); //call parent constructor
     },
-    static: {},
+    static: {
+		INITSERVER: false
+	},
     member: {
 		arena: null,
 		character: null,
         character2: null,
 		server: null,
+		
+		pressedKeys: [],
 		
 		input: null,
 
@@ -16,7 +20,7 @@ app.core.Object.define("app.controller.Game", {
 			this.arena = new app.controller.Arena(new app.model.Arena(), new app.view.Arena());
 			this.arena.drawBackground();
 
-            this._initServer();
+            if(app.controller.Game.INITSERVER) this._initServer();
 
 
             // create all players
@@ -44,8 +48,21 @@ app.core.Object.define("app.controller.Game", {
 			this.server = server;
 		},
 
+		logKeyboard: function() {
+			var str = "--== keyboard states ==--\n";
+			for(var i = 0; i < this.pressedKeys.length; i++) {
+				if (this.pressedKeys[i] === false || this.pressedKeys[i] === true) {
+					str += i + ": " + this.pressedKeys[i] + "\n";
+				}
+			}
+			console.log(str);
+			window.setTimeout(this.logKeyboard.bind(this), 3000);
+		},
+
 		bindInput: function() {
 			var scope = this;
+			
+			this.logKeyboard();
 
 			$(window).keydown(function(event) {
 
@@ -55,8 +72,24 @@ app.core.Object.define("app.controller.Game", {
 
 			  scope.input = new app.event.Keyboard(event);
 			  var code = scope.input.getCode();
+			  
 			  // false if event is not binded to any action
-			  if(code) scope.character.runEvent(code);
+			  if (code) {
+			  	scope.pressedKeys[key] = true;
+			  	scope.character.runEvent(code);
+			  }
+			});
+			
+			$(window).keyup(function(event) {
+				var key = event.keyCode;
+				
+				scope.input = new app.event.Keyboard(event);
+				var code = scope.input.getCode();
+				// false if event is not binded to any action
+				if (code) {
+					scope.pressedKeys[key] = false;
+					scope.character.stopEvent(code);
+				}
 			});
 		}
 	}
