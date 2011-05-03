@@ -1,0 +1,7 @@
+.idea
+*.orig
+*.iml
+.bak*
+*.bak
+*.swp
+*~
