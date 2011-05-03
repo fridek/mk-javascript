@@ -69,7 +69,6 @@ var Game = Class.extend({
         adversary = $(fighter.adversary),
         adversaryFighter = adversary.data("fighter");
 
-//        var nextState = this.nextMove(0.8, sprite, adversary);
         var nextState = this.input.getState();
 
         if(fighter.currentState == nextState) {return; }
@@ -150,7 +149,10 @@ var Game = Class.extend({
                          animation: foreground});
         $$("#sceengraph").css("background-color","#121423");
 
-        var cvs = new Cvs();
+        $$("#playground").append('<div class="healthbar" id="player1_healthbar"><div class="innerHealthbar"></div></div>');
+        $$("#playground").append('<div class="healthbar" id="player2_healthbar"><div class="innerHealthbar"></div></div>');
+
+        var cvs = new Cvs(that);
         $$("#fighters").addSprite("cvs",
                             {posx: 250,
                              posy: 70,
@@ -160,8 +162,10 @@ var Game = Class.extend({
                              geometry: $.gameQuery.GEOMETRY_RECTANGLE
                             });
         $$("#cvs").data("fighter", cvs);
+        cvs.dom = $$('#cvs');
+        cvs.healthBar = $("#player1_healthbar .innerHealthbar");
 
-        var abobo = new Abobo();
+        var abobo = new Abobo(that);
         $$("#fighters").addSprite("abobo",
                                     {posx: 550,
                                      posy: 60,
@@ -171,8 +175,10 @@ var Game = Class.extend({
                                      geometry: $.gameQuery.GEOMETRY_RECTANGLE,
                                      callback: function (sprite) {that.animate.apply(that,[sprite])}
                                     });
-
         $$("#abobo").data("fighter", abobo);
+        abobo.dom = $$("#abobo");
+        abobo.healthBar = $("#player2_healthbar .innerHealthbar");
+
         var prevState = 0;
         $.playground().registerCallback(function(){
             that.input.processEvent();
@@ -189,25 +195,21 @@ var Game = Class.extend({
 
             that.playerAnimate.apply(that,["cvs"]);
 
-            /*
+
             //hit?
             if(cvsLeft+cvsF.animations[cvsF.currentState].width - 2 > aboboLeft){
                 if((cvsF.currentState == KICK || cvsF.currentState == PUNCH) && aboboF.currentState != BEATEN){
-                    if (abobo.currentState == KICK || aboboF.currentState == PUNCH) {
-                        that.changeAnimation(abobo, aboboF.animations, BEATEN, aboboF.currentState);
-                        abobo.currentState = BEATEN;
-                        that.changeAnimation(cvs, cvsF.animations, BEATEN, cvsF.currentState);
-                        cvs.currentState = BEATEN;
+                    if (aboboF.currentState == KICK || aboboF.currentState == PUNCH) {
+                        aboboF.beaten();
+                        cvsF.beaten();
                     } else {
-                        that.changeAnimation(abobo, aboboF.animations, BEATEN, aboboF.currentState);
-                        abobo.currentState = BEATEN;
+                        aboboF.beaten();
                     }
-                } else if ((aboboF.currentState == KICK || abobo.currentState == PUNCH) && cvsF.currentState != BEATEN) {
-                    that.changeAnimation(cvs, cvsF.animations, BEATEN, cvsF.currentState);
-                    cvs.currentState = BEATEN;
+                } else if ((aboboF.currentState == KICK || aboboF.currentState == PUNCH) && cvsF.currentState != BEATEN) {
+                    cvsF.beaten();
                 }
             }
-            */
+
             //Move
 
 

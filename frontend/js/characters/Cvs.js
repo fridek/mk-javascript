@@ -52,7 +52,7 @@ var Cvs = Character.extend({
             deltaX: 0, deltaY: 3, width: 59, height: 103}],
 
 
-    init: function () {
-        
+    init: function (game) {
+        this._super(game);
     }
 });

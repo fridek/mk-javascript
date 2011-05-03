@@ -1,5 +1,4 @@
-var $$ = function (selector, scope) {
-    if(scope) return $(selector, scope);
+var $$ = function (selector) {
     if($$.members[selector]) {return $$.members[selector];}
     $$.members[selector] = $(selector);
     return $$.members[selector];

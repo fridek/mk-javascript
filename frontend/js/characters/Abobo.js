@@ -51,7 +51,7 @@ var Abobo = Character.extend({
                                 type: $.gameQuery.ANIMATION_HORIZONTAL | $.gameQuery.ANIMATION_CALLBACK}),
               deltaX: 0, deltaY: 50, width: 108, height: 120}],
 
-    init: function () {
-
+    init: function (game) {
+        this._super(game);
     }
 });
