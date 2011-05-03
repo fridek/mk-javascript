@@ -64,13 +64,15 @@ var Game = Class.extend({
     },
 
     playerAnimate: function (sprite){
-        var sprite = $$("#" + sprite.id),
+        var sprite = $$("#" + sprite),
         fighter = sprite.data("fighter"),
         adversary = $(fighter.adversary),
         adversaryFighter = adversary.data("fighter");
 
 //        var nextState = this.nextMove(0.8, sprite, adversary);
         var nextState = this.input.getState();
+
+        if(fighter.currentState == nextState) {return; }
 
         this.changeAnimation(sprite, fighter.animations, nextState, fighter.currentState);
 
@@ -155,8 +157,7 @@ var Game = Class.extend({
                              height: 106,
                              width: 58,
                              animation: cvs.animations[0].animation,
-                             geometry: $.gameQuery.GEOMETRY_RECTANGLE,
-                             callback: function (sprite) {that.playerAnimate.apply(that,[sprite])}
+                             geometry: $.gameQuery.GEOMETRY_RECTANGLE
                             });
         $$("#cvs").data("fighter", cvs);
 
@@ -172,10 +173,11 @@ var Game = Class.extend({
                                     });
 
         $$("#abobo").data("fighter", abobo);
-
+        var prevState = 0;
         $.playground().registerCallback(function(){
             that.input.processEvent();
-        }, 0);
+        }, 30);
+        
         $.playground().registerCallback(function(){
             var cvs = $("#cvs");
             var cvsF = cvs.data("fighter");
@@ -185,6 +187,9 @@ var Game = Class.extend({
             var aboboF = abobo.data("fighter");
             var aboboLeft = abobo.position().left;
 
+            that.playerAnimate.apply(that,["cvs"]);
+
+            /*
             //hit?
             if(cvsLeft+cvsF.animations[cvsF.currentState].width - 2 > aboboLeft){
                 if((cvsF.currentState == KICK || cvsF.currentState == PUNCH) && aboboF.currentState != BEATEN){
@@ -202,7 +207,7 @@ var Game = Class.extend({
                     cvs.currentState = BEATEN;
                 }
             }
-
+            */
             //Move
 
 
