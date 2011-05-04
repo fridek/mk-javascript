@@ -73,12 +73,16 @@ var Game = Class.extend({
 
         var nextState = this.input.getState();
 
-        if(fighter.currentState == nextState) {return; }
+        if(fighter.lockAttack || fighter.currentState == nextState) {return; }
 
         this.changeAnimation(sprite, fighter.animations, nextState, fighter.currentState);
 
         if(nextState == STATES.PUNCH || nextState == STATES.KICK){
             sprite.css("z-index", 20);
+            
+            fighter.lockAttack = true;
+            window.setTimeout(function() {fighter.lockAttack = false;}, 1000);
+
             window.setTimeout(function() {fighter.attacking = true;}, 500);
         } else if(fighter.currentState == STATES.PUNCH || fighter.currentState == STATES.KICK){
             sprite.css("z-index", undefined);
@@ -132,11 +136,11 @@ var Game = Class.extend({
         $$("#playground").playground({height: PLAYGROUND_HEIGHT, width: PLAYGROUND_WIDTH, refreshRate: 30, keyTracker: true});
 
         //Playground Sprites
-        var foreground 	= new $.gameQuery.Animation({imageURL: "./images/levels/foreground.png", type: $.gameQuery.ANIMATION_VERTICAL});
-        var ground 		= new $.gameQuery.Animation({imageURL: "./images/levels/ground.png"});
-        var background1 = new $.gameQuery.Animation({imageURL: "./images/levels/background1.png"});
-        var background2 = new $.gameQuery.Animation({imageURL: "./images/levels/background2.png"});
-        var background3 = new $.gameQuery.Animation({imageURL: "./images/levels/background3.png"});
+        var foreground 	= new $.gameQuery.Animation({imageURL: "./frontend/images/levels/foreground.png", type: $.gameQuery.ANIMATION_VERTICAL});
+        var ground 		= new $.gameQuery.Animation({imageURL: "./frontend/images/levels/ground.png"});
+        var background1 = new $.gameQuery.Animation({imageURL: "./frontend/images/levels/background1.png"});
+        var background2 = new $.gameQuery.Animation({imageURL: "./frontend/images/levels/background2.png"});
+        var background3 = new $.gameQuery.Animation({imageURL: "./frontend/images/levels/background3.png"});
         $.playground()
             .addSprite(	"background3",
                         {posx: 90, posy: 0,
