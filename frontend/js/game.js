@@ -56,7 +56,7 @@ var Game = Class.extend({
 
         if(nextState == STATES.PUNCH || nextState == STATES.KICK){
             sprite.css("z-index", 20);
-            window.setTimeout(function() {fighter.attacking = true;}, 300);
+            window.setTimeout(function() {fighter.attacking = true;}, 500);
         } else if(fighter.currentState == STATES.PUNCH || fighter.currentState == STATES.KICK){
             fighter.attacking = false;
             sprite.css("z-index", undefined);
@@ -79,7 +79,7 @@ var Game = Class.extend({
 
         if(nextState == STATES.PUNCH || nextState == STATES.KICK){
             sprite.css("z-index", 20);
-            window.setTimeout(function() {fighter.attacking = true;}, 300);
+            window.setTimeout(function() {fighter.attacking = true;}, 500);
         } else if(fighter.currentState == STATES.PUNCH || fighter.currentState == STATES.KICK){
             sprite.css("z-index", undefined);
             fighter.attacking = false;
@@ -209,20 +209,20 @@ var Game = Class.extend({
 
             //hit?
             if(cvsLeft+cvsF.animations[cvsF.currentState].width - 2 > aboboLeft){
-                if((cvsF.attacking) && aboboF.currentState != STATES.BEATEN){
+                if((cvsF.attacking) && aboboF.currentState != STATES.BLOCK){
                     if (aboboF.attacking) {
-                        cvsF.attacking = false;
                         aboboF.beaten();
-                        aboboF.attacking = false;
                         cvsF.beaten();
                     } else {
-                        cvsF.attacking = false;
                         aboboF.beaten();
                     }
-                } else if ((aboboF.attacking) && cvsF.currentState != STATES.BEATEN) {
-                    aboboF.attacking = false;
+                } else if ((aboboF.attacking) && cvsF.currentState != STATES.BLOCK) {
                     cvsF.beaten();
                 }
+
+                // one hit at the time
+                cvsF.attacking = false;
+                aboboF.attacking = false;
             }
 
             //Move
