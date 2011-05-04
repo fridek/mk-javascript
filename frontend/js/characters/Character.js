@@ -18,10 +18,12 @@ var Character = Class.extend({
     },
 
     beaten: function () {
-        this.game.changeAnimation(this.dom, this.animations, BEATEN, this.currentState);
-        this.currentState = BEATEN;
+        this.game.changeAnimation(this.dom, this.animations, STATES.BEATEN, this.currentState);
+        this.currentState = STATES.BEATEN;
 
         this.health -= 5;
+        if(this.health <= 0) {this.game.stop(); }
+
         this.updateHealthBar();
     },
 

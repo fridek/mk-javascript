@@ -11,35 +11,35 @@ var Game = Class.extend({
 
     nextMove: function (level, a, b){
         if(Math.random() > level){
-            return Math.round(Math.random()*5);
+            return this.or([STATES.WALK_FORWARD, STATES.IDLE, STATES.WALK_BACKWARD, STATES.BLOCK, STATES.PUNCH]);
         }
         switch(b.data("fighter").currentState){
             // if the adversary is idle or moves away from us we get near him or attack ihm
-            case IDLE:
-            case WALK_BACKWARD:
-            case BLOCK:
+            case STATES.IDLE:
+            case STATES.WALK_BACKWARD:
+            case STATES.BLOCK:
                 if(this.distance(a,b) < NEAR){
-                    return this.or([KICK, PUNCH, WALK_BACKWARD]);
+                    return this.or([STATES.KICK, STATES.PUNCH, STATES.WALK_BACKWARD]);
                 } else {
-                    return this.or([WALK_FORWARD, IDLE]);
+                    return this.or([STATES.WALK_FORWARD, STATES.IDLE]);
                 }
                 break;
             // if the adversary moves toward us we get away or attack ihm
-            case WALK_FORWARD:
+            case STATES.WALK_FORWARD:
                 if(this.distance(a,b) < NEAR){
-                    return this.or([KICK, PUNCH, WALK_BACKWARD]);
+                    return this.or([STATES.KICK, STATES.PUNCH, STATES.WALK_BACKWARD]);
                 } else {
-                    return this.or([WALK_FORWARD, IDLE]);
+                    return this.or([STATES.WALK_FORWARD, STATES.IDLE]);
                 }
                 break;
             // if we are under attack we either block go back or try to fight back
-            case PUNCH:
-            case KICK:
-                return this.or([BLOCK, PUNCH, KICK, IDLE]);
+            case STATES.PUNCH:
+            case STATES.KICK:
+                return this.or([STATES.BLOCK, STATES.PUNCH, STATES.KICK, STATES.IDLE]);
                 break;
             // if beaten we block or go back
-            case BEATEN:
-                return this.or([BLOCK, WALK_BACKWARD, IDLE]);
+            case STATES.BEATEN:
+                return this.or([STATES.BLOCK, STATES.WALK_BACKWARD, STATES.IDLE]);
                 break;
         }
     },
@@ -54,9 +54,11 @@ var Game = Class.extend({
 
         this.changeAnimation(sprite, fighter.animations, nextState, fighter.currentState);
 
-        if(nextState == PUNCH || nextState == KICK){
+        if(nextState == STATES.PUNCH || nextState == STATES.KICK){
             sprite.css("z-index", 20);
-        } else if(fighter.currentState == PUNCH || fighter.currentState == KICK){
+            window.setTimeout(function() {fighter.attacking = true;}, 300);
+        } else if(fighter.currentState == STATES.PUNCH || fighter.currentState == STATES.KICK){
+            fighter.attacking = false;
             sprite.css("z-index", undefined);
         }
 
@@ -75,10 +77,12 @@ var Game = Class.extend({
 
         this.changeAnimation(sprite, fighter.animations, nextState, fighter.currentState);
 
-        if(nextState == PUNCH || nextState == KICK){
+        if(nextState == STATES.PUNCH || nextState == STATES.KICK){
             sprite.css("z-index", 20);
-        } else if(fighter.currentState == PUNCH || fighter.currentState == KICK){
+            window.setTimeout(function() {fighter.attacking = true;}, 300);
+        } else if(fighter.currentState == STATES.PUNCH || fighter.currentState == STATES.KICK){
             sprite.css("z-index", undefined);
+            fighter.attacking = false;
         }
 
         fighter.currentState = nextState;
@@ -110,6 +114,13 @@ var Game = Class.extend({
             .height(animationArry[newAnimation].height)
             .css("top",  sprite.position().top  + animationArry[newAnimation].deltaY - animationArry[oldAnimation].deltaY)
             .css("left", sprite.position().left + animationArry[newAnimation].deltaX - animationArry[oldAnimation].deltaX);
+    },
+
+    stop: function () {
+        var winner = $$("#cvs").data("fighter").health?"Player":"Computer";
+        $.gameQuery.resourceManager.refresh = function() {};
+        $.gameQuery.resourceManager.running = false;
+        $$("#playground").html('<h1 id="win">' + winner + ' wins!</div>');
     },
 
     init: function () {
@@ -158,7 +169,7 @@ var Game = Class.extend({
                              posy: 70,
                              height: 106,
                              width: 58,
-                             animation: cvs.animations[0].animation,
+                             animation: cvs.animations[STATES.IDLE].animation,
                              geometry: $.gameQuery.GEOMETRY_RECTANGLE
                             });
         $$("#cvs").data("fighter", cvs);
@@ -171,7 +182,7 @@ var Game = Class.extend({
                                      posy: 60,
                                      height: 121,
                                      width: 100,
-                                     animation: abobo.animations[0].animation,
+                                     animation: abobo.animations[STATES.IDLE].animation,
                                      geometry: $.gameQuery.GEOMETRY_RECTANGLE,
                                      callback: function (sprite) {that.animate.apply(that,[sprite])}
                                     });
@@ -198,14 +209,18 @@ var Game = Class.extend({
 
             //hit?
             if(cvsLeft+cvsF.animations[cvsF.currentState].width - 2 > aboboLeft){
-                if((cvsF.currentState == KICK || cvsF.currentState == PUNCH) && aboboF.currentState != BEATEN){
-                    if (aboboF.currentState == KICK || aboboF.currentState == PUNCH) {
+                if((cvsF.attacking) && aboboF.currentState != STATES.BEATEN){
+                    if (aboboF.attacking) {
+                        cvsF.attacking = false;
                         aboboF.beaten();
+                        aboboF.attacking = false;
                         cvsF.beaten();
                     } else {
+                        cvsF.attacking = false;
                         aboboF.beaten();
                     }
-                } else if ((aboboF.currentState == KICK || aboboF.currentState == PUNCH) && cvsF.currentState != BEATEN) {
+                } else if ((aboboF.attacking) && cvsF.currentState != STATES.BEATEN) {
+                    aboboF.attacking = false;
                     cvsF.beaten();
                 }
             }
@@ -213,19 +228,19 @@ var Game = Class.extend({
             //Move
 
 
-            if(cvsF.currentState == WALK_FORWARD){
+            if(cvsF.currentState == STATES.WALK_FORWARD){
                 if((cvsLeft+cvsF.animations[cvsF.currentState].width+2) < aboboLeft){
                     cvs.css("left", cvsLeft+2);
                 }
-            } else if ((cvsLeft > 50) && (cvsF.currentState == WALK_BACKWARD)){
+            } else if ((cvsLeft > 50) && (cvsF.currentState == STATES.WALK_BACKWARD)){
                 cvs.css("left", cvsLeft-2)
             }
 
-            if(aboboF.currentState == WALK_FORWARD){
+            if(aboboF.currentState == STATES.WALK_FORWARD){
                 if((cvsLeft+cvsF.animations[cvsF.currentState].width+2) < aboboLeft){
                     abobo.css("left", aboboLeft - 2);
                 }
-            } else if ((aboboLeft < 650) && (aboboF.currentState == WALK_BACKWARD)){
+            } else if ((aboboLeft < 650) && (aboboF.currentState == STATES.WALK_BACKWARD)){
                 abobo.css("left", aboboLeft + 2);
             }
 

@@ -9,13 +9,14 @@
 var PLAYGROUND_WIDTH = 800,
     PLAYGROUND_HEIGHT = 200,
     // possible move;
-    IDLE=          0,
-    WALK_FORWARD=  1,
-    WALK_BACKWARD= 2,
-    PUNCH=         3,
-    KICK=          4,
-    BLOCK=         5,
-    BEATEN=        6,
-
+    STATES = {
+        IDLE:          "idle",
+        WALK_FORWARD:  "walk_forward",
+        WALK_BACKWARD: "walk_backward",
+        PUNCH:         "punch",
+        KICK:          "kick",
+        BLOCK:         "block",
+        BEATEN:        "beaten"
+    },
     //constantes:
     NEAR=         100;

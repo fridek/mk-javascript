@@ -1,7 +1,7 @@
 var Input = Class.extend({
 
     pressedKeys: [],
-    _eventCode: IDLE,
+    _eventCode: STATES.IDLE,
     _eventType: null,
 
     logKeyboard: function() {
@@ -34,25 +34,25 @@ var Input = Class.extend({
 
 
     processEvent: function () {
-        this._eventCode = IDLE;
+        this._eventCode = STATES.IDLE;
 
         if(this.pressedKeys[37]) {
-            this._eventCode = WALK_BACKWARD;
+            this._eventCode = STATES.WALK_BACKWARD;
         }
         if(this.pressedKeys[39]) {
-            this._eventCode = WALK_FORWARD;
+            this._eventCode = STATES.WALK_FORWARD;
         }
         if(this.pressedKeys[87]) {
-            this._eventCode = PUNCH;
+            this._eventCode = STATES.PUNCH;
         }
         if(this.pressedKeys[83]) {
-            this._eventCode = PUNCH;
+            this._eventCode = STATES.PUNCH;
         }
         if(this.pressedKeys[81]) {
-            this._eventCode = KICK;
+            this._eventCode = STATES.KICK;
         }
         if(this.pressedKeys[65]) {
-            this._eventCode = KICK;
+            this._eventCode = STATES.KICK;
         }
 
             /*case 38:
